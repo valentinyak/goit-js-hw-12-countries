@@ -1,8 +1,7 @@
 import fetchCountries from './fetchCountries';
 import debounce from 'lodash.debounce';
-import { defaultModules } from '@pnotify/core/dist/PNotify.js';
-import { error } from '@pnotify/core';
-import * as PNotifyAnimate from '@pnotify/animate';
+import createNotificationError from './createNotificationError';
+import listTemplate from './listTemplate.hbs';
 
 import '@pnotify/core/dist/BrightTheme.css';
 import './common.css';
@@ -14,33 +13,20 @@ const refs = {
 refs.inputEl.addEventListener('input', debounce(getContriesFromInput, 500));
 
 function getContriesFromInput() {
-  fetchCountries(refs.inputEl.value);
+  const serchQuery = fetchCountries(refs.inputEl.value);
+  // serchQuery.then(data => findSerchResaltLength(data));
+  // listTemplate(serchQuery);
+  serchQuery
+    .then(data => {
+      return listTemplate(data);
+    })
+    .then(console.log);
 }
 
-setTimeout(() => {
-  const myError = error({
-    text: 'Too many matches found. Please enter a more specific query!',
-    width: '250px',
-    delay: 150000,
-    closer: false,
-    sticker: false,
-    modules: new Map([
-      ...defaultModules,
-      [
-        PNotifyAnimate,
-        {
-          inClass: 'animate__animated animate__backOutDown',
-          outClass: 'animate__animated animate__backOutUp',
-        },
-      ],
-    ]),
-  });
-
-  const errorRefs = {
-    errorEl: document.querySelector('div.brighttheme-container'),
-    errorContentEl: document.querySelector('div.brighttheme-content'),
-  };
-
-  errorRefs.errorEl.style.display = 'flex';
-  errorRefs.errorContentEl.style.marginLeft = '5px';
-}, 2000);
+function findSerchResaltLength(array) {
+  if (array.length > 10) {
+    createNotificationError();
+  } else if (array.length > 1 && array.length < 10) {
+    listTemplate(array);
+  }
+}

@@ -1,3 +1,16 @@
 body {
   background-color: aquamarine;
+  padding: 0;
+  margin: 0;
+}
+input {
+  width: 250px;
+  height: 30px;
+  /* padding-top: 3px; */
+  font-size: 20px;
+  border-color: blueviolet;
+  border-width: 3px;
+  outline: none;
+  margin-top: 30px;
+  margin-left: 30px;
 }
